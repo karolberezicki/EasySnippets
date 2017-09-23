@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using EasySnippets.ViewModels;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace EasySnippets.Views
 {
@@ -17,12 +21,7 @@ namespace EasySnippets.Views
         public MainWindow()
         {
 
-            SnippetsList = new ObservableCollection<Snippet>
-            {
-                new Snippet {Name = "Name1", Value = "Value1"},
-                new Snippet {Name = "Name2", Value = "Value2"},
-                new Snippet {Name = "Name3", Value = "  - if the current character is a digit (\'0\'-\'9\'), the machineValue2Value3Value1Value2 * - if the current character is a digit (\'0\'-\'9\'), the machine\r\n * pushes the value of that digit onto its stack;<br/>\r\n * - if the current character is \'+\', the machine pops the two\r\n * topmost values from its stack, adds them and pushes the result\r\n * onto the stack;<br/>\r\n * - if the current character is \'*\', the machine pops the two\r\n * topmost values from its stack, multiplies them and pushes the\r\n * result onto the stack;<br/>\r\n * - after the machine has processed the whole string it returns the\r\n * topmost value of its stack as the result;<br/>"}
-            };
+            SnippetsList = new ObservableCollection<Snippet>();
 
             InitializeComponent();
         }
@@ -42,11 +41,42 @@ namespace EasySnippets.Views
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "JSON Files(*.json)|*.json|All(*.*)|*"
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                string json = File.ReadAllText(dialog.FileName);
+                List<Snippet> deserializedSnippets = JsonConvert.DeserializeObject<List<Snippet>>(json);
+                SnippetsList.Clear();
+                deserializedSnippets.ForEach(snippet => SnippetsList.Add(snippet));
+            }
+            catch (Exception)
+            {
+                MessageBoxCentered.Show(this, "Couldn't read file.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void MenuSaveAs_Click(object sender, RoutedEventArgs e)
         {
+            string json = JsonConvert.SerializeObject(SnippetsList, Formatting.Indented);
 
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "JSON Files(*.json)|*.json|All(*.*)|*"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                File.WriteAllText(dialog.FileName, json);
+            }
         }
 
         private void AlwaysOnTopToggle(object sender, RoutedEventArgs e)
@@ -63,7 +93,7 @@ namespace EasySnippets.Views
 
         private void AddNewClick(object sender, RoutedEventArgs e)
         {
-            EditorWindow editorWindow = new EditorWindow(new Snippet());
+            EditorWindow editorWindow = new EditorWindow(new Snippet(), false);
 
             if (editorWindow.ShowDialog() == true)
             {
@@ -71,22 +101,37 @@ namespace EasySnippets.Views
             }
         }
 
-        private void SnippetsDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void EditSnippet(object sender, MouseButtonEventArgs e)
         {
             int rowIndex = SnippetsDataGrid.SelectedIndex;
 
-            Snippet snippet = SnippetsList[rowIndex];
-            Console.WriteLine($@"Right clicked snippet {rowIndex} = {snippet.Name} ");
+            Snippet snippet = rowIndex < SnippetsList.Count ? SnippetsList[rowIndex] : new Snippet();
+            bool isEdit = rowIndex < SnippetsList.Count;
 
-            EditorWindow editorWindow = new EditorWindow(snippet);
+            EditorWindow editorWindow = new EditorWindow(snippet, isEdit);
 
             if (editorWindow.ShowDialog() != true)
             {
                 return;
             }
 
-            SnippetsList[rowIndex].Name = editorWindow.Snippet.Name;
-            SnippetsList[rowIndex].Value = editorWindow.Snippet.Value;
+            if (editorWindow.IsSetToDelete)
+            {
+                SnippetsList.RemoveAt(rowIndex);
+                Clipboard.Clear();
+                return;
+            }
+
+            if (rowIndex < SnippetsList.Count)
+            {
+                SnippetsList[rowIndex].Name = editorWindow.Snippet.Name;
+                SnippetsList[rowIndex].Value = editorWindow.Snippet.Value;
+            }
+            else
+            {
+                SnippetsList.Add(editorWindow.Snippet);
+            }
+
             Clipboard.SetText($"{editorWindow.Snippet.Value}");
         }
     }

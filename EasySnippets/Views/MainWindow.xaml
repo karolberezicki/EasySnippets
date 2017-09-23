@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EasySnippets"
         x:Name="EasySnippetsWindow"
         mc:Ignorable="d"
-        Title="ES" Height="300" Width="400" Closing="Window_Closing" WindowStyle="ToolWindow">
+        Title="ES" Height="300" Width="180" Closing="Window_Closing" WindowStyle="ToolWindow">
 
     <Grid>
         <Grid.DataContext>
@@ -30,10 +30,10 @@
                   AutoGenerateColumns="False"
                   Name="SnippetsDataGrid"
                   SelectionChanged="SnippetsDataGrid_OnSelectionChanged"
-                  MouseDoubleClick="SnippetsDataGrid_OnMouseDoubleClick"
+                  MouseDoubleClick="EditSnippet"
                   Margin="0,20,0,0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" Width="*" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" Width="*" IsReadOnly="True" FontSize="20" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

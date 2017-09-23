@@ -9,19 +9,20 @@ namespace EasySnippets.Views
     public partial class EditorWindow
     {
         public Snippet Snippet { get; set; }
-        public int SnippetIndex { get; set; }
+        public bool IsEdit { get; set; }
+        public bool IsSetToDelete { get; private set; }
 
-
-        public EditorWindow(Snippet snippet)
+        public EditorWindow(Snippet snippet, bool isEdit)
         {
             InitializeComponent();
             Owner = Application.Current.MainWindow;
             Snippet = snippet;
             SnippetNameTextBox.Text = snippet.Name;
             SnippetValueTextBox.Text = snippet.Value;
+            IsEdit = isEdit;
         }
 
-        private void OkButtonClick(object sender, RoutedEventArgs e)
+        private void OkClick(object sender, RoutedEventArgs e)
         {
             Snippet.Name = SnippetNameTextBox.Text;
             Snippet.Value = SnippetValueTextBox.Text;
@@ -29,9 +30,15 @@ namespace EasySnippets.Views
             DialogResult = true;
         }
 
-        private void CancelButtonClick(object sender, RoutedEventArgs e)
+        private void CancelClick(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void DeleteClick(object sender, RoutedEventArgs e)
+        {
+            IsSetToDelete = true;
+            DialogResult = true;
         }
     }
 }

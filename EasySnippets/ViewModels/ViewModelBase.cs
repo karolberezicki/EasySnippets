@@ -1,29 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using EasySnippets.Annotations;
 
-namespace EasySnippets
+namespace EasySnippets.ViewModels
 {
-    public class Snippet : ViewModelBase
-    {
-        private string _name;
-        private string _value;
-
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-
-        public string Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
-    }
-
-
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

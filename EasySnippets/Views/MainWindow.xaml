@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EasySnippets"
         x:Name="EasySnippetsWindow"
         mc:Ignorable="d"
-        Title="ES" Height="300" Width="180" Closing="Window_Closing" WindowStyle="ToolWindow">
+        Title="Easy Snippets" Height="300" Width="200" Closing="Window_Closing" WindowStyle="ToolWindow">
 
     <Grid>
         <Grid.DataContext>

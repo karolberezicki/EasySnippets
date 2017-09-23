@@ -28,15 +28,23 @@ namespace EasySnippets.Views
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
+            if (CancelClose())
+            {
+                return;
+            }
+
             Application.Current.Shutdown();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            #if !DEBUG
-            e.Cancel = MessageBoxCentered.Show(this, "Are you sure?", "Exit",
+            e.Cancel = CancelClose();
+        }
+
+        private bool CancelClose()
+        {
+            return MessageBoxCentered.Show(this, "Are you sure?", "Exit",
                            MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No;
-            #endif
         }
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)

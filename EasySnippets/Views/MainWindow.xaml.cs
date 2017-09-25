@@ -142,5 +142,10 @@ namespace EasySnippets.Views
 
             Clipboard.SetText($"{editorWindow.Snippet.Value}");
         }
+
+        private void MainWindow_OnDeactivated(object sender, EventArgs e)
+        {
+            SnippetsDataGrid.UnselectAll();
+        }
     }
 }

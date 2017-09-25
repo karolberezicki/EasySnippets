@@ -6,35 +6,49 @@
         xmlns:local="clr-namespace:EasySnippets"
         x:Name="EasySnippetsWindow"
         mc:Ignorable="d"
-        Title="Easy Snippets" Height="300" Width="200" Closing="Window_Closing" WindowStyle="ToolWindow">
+        Title="Easy Snippets" 
+        Height="300" Width="200" 
+        WindowStyle="ToolWindow"
+        Closing="Window_Closing"  Deactivated="MainWindow_OnDeactivated">
 
     <Grid>
         <Grid.DataContext>
             <Binding ElementName="EasySnippetsWindow" Path="." />
         </Grid.DataContext>
 
-        <Menu DockPanel.Dock="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
             <MenuItem Header="_File">
                 <MenuItem Header="Open..." Click="MenuOpen_Click" />
                 <MenuItem Header="Save As..." Click="MenuSaveAs_Click" />
                 <MenuItem Header="_Exit" Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="_Always on top" IsCheckable="True" IsChecked="False" Checked="AlwaysOnTopToggle"
-                          Unchecked="AlwaysOnTopToggle" />
+                <MenuItem Header="_Always on top" IsCheckable="True" IsChecked="False" 
+                          Checked="AlwaysOnTopToggle" Unchecked="AlwaysOnTopToggle" />
             </MenuItem>
-            <MenuItem Header="+ Add new" Click="AddNewClick" />
+            <MenuItem Header="+Add new" Click="AddNewClick" />
         </Menu>
 
-        <DataGrid ItemsSource="{Binding SnippetsList}"
+        <DataGrid Grid.Row="1" ItemsSource="{Binding SnippetsList}"
                   AutoGenerateColumns="False"
                   Name="SnippetsDataGrid"
                   SelectionChanged="SnippetsDataGrid_OnSelectionChanged"
                   MouseDoubleClick="EditSnippet"
-                  Margin="0,20,0,0">
+                  SelectionMode="Single">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" Width="*" IsReadOnly="True" FontSize="20" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" 
+                                    Width="*" IsReadOnly="True" FontSize="20" />
             </DataGrid.Columns>
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                                 Color="LightSkyBlue"/>
+            </DataGrid.Resources>
         </DataGrid>
     </Grid>
 

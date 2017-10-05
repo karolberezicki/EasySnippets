@@ -11,6 +11,18 @@
         WindowStyle="ToolWindow"
         Closing="Window_Closing"  Deactivated="MainWindow_OnDeactivated">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="MenuOpen_Click"></CommandBinding>
+        <CommandBinding Command="Save" Executed="MenuSave_Click"></CommandBinding>
+        <CommandBinding Command="SaveAs" Executed="MenuSaveAs_Click"></CommandBinding>
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"></KeyBinding>
+    </Window.InputBindings>
+
     <Grid>
         <Grid.DataContext>
             <Binding ElementName="EasySnippetsWindow" Path="." />
@@ -24,8 +36,9 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="_File">
-                <MenuItem Header="Open..." Click="MenuOpen_Click" />
-                <MenuItem Header="Save As..." Click="MenuSaveAs_Click" />
+                <MenuItem Header="Open..." Click="MenuOpen_Click" Command="Open" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Save" Click="MenuSave_Click" />
+                <MenuItem Header="Save As..." Click="MenuSaveAs_Click" Command="SaveAs" InputGestureText="Ctrl+S"/>
                 <MenuItem Header="_Exit" Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">

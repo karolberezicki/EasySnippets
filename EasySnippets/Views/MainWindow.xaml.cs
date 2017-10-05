@@ -148,5 +148,11 @@ namespace EasySnippets.Views
         {
             SnippetsDataGrid.UnselectAll();
         }
+
+        private void MenuSave_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

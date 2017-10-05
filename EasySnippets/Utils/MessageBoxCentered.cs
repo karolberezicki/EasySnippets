@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace EasySnippets
+namespace EasySnippets.Utils
 {
     public class MessageBoxCentered
     {

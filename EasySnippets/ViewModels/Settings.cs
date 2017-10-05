@@ -1,0 +1,52 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+
+namespace EasySnippets.ViewModels
+{
+    public class Settings : ViewModelBase
+    {
+        public const string SettingsPath = @".\settings.json";
+
+        private bool _autoStartEnabled;
+
+        public bool AutoStartEnabled
+        {
+            get => _autoStartEnabled;
+            set => SetProperty(ref _autoStartEnabled, value);
+        }
+
+        private bool _alwaysOnTopEnabled;
+
+        public bool AlwaysOnTopEnabled
+        {
+            get => _alwaysOnTopEnabled;
+            set => SetProperty(ref _alwaysOnTopEnabled, value);
+        }
+
+        private string _currentFilePath;
+
+        public string CurrentFilePath
+        {
+            get => _currentFilePath;
+            set => SetProperty(ref _currentFilePath, value);
+        }
+
+        protected new virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+            storage = value;
+            this.OnPropertyChanged(propertyName);
+            SaveSettings();
+            return true;
+        }
+
+        private void SaveSettings()
+        {
+            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            File.WriteAllText(SettingsPath, json);
+        }
+    }
+}

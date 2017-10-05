@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EasySnippets.Utils;
 using EasySnippets.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -17,13 +18,14 @@ namespace EasySnippets.Views
     public partial class MainWindow
     {
         public ObservableCollection<Snippet> SnippetsList { get; set; }
+        public Settings AppSettings { get; set; }
 
         public MainWindow()
         {
-
             SnippetsList = new ObservableCollection<Snippet>();
-
             InitializeComponent();
+
+            LoadSettings();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -59,12 +61,18 @@ namespace EasySnippets.Views
                 return;
             }
 
+            LoadFile(dialog.FileName);
+        }
+
+        private void LoadFile(string path)
+        {
             try
             {
-                string json = File.ReadAllText(dialog.FileName);
+                string json = File.ReadAllText(path);
                 List<Snippet> deserializedSnippets = JsonConvert.DeserializeObject<List<Snippet>>(json);
                 SnippetsList.Clear();
                 deserializedSnippets.ForEach(snippet => SnippetsList.Add(snippet));
+                AppSettings.CurrentFilePath = path;
             }
             catch (Exception)
             {
@@ -74,8 +82,11 @@ namespace EasySnippets.Views
 
         private void MenuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            string json = JsonConvert.SerializeObject(SnippetsList, Formatting.Indented);
+            SaveFileUsingFileDialog();
+        }
 
+        private void SaveFileUsingFileDialog()
+        {
             SaveFileDialog dialog = new SaveFileDialog
             {
                 Filter = "JSON Files(*.json)|*.json|All(*.*)|*"
@@ -83,13 +94,21 @@ namespace EasySnippets.Views
 
             if (dialog.ShowDialog() == true)
             {
-                File.WriteAllText(dialog.FileName, json);
+                SaveFile(dialog.FileName);
+                AppSettings.CurrentFilePath = dialog.FileName;
             }
+        }
+
+        private void SaveFile(string path)
+        {
+            string json = JsonConvert.SerializeObject(SnippetsList, Formatting.Indented);
+            File.WriteAllText(path, json);
         }
 
         private void AlwaysOnTopToggle(object sender, RoutedEventArgs e)
         {
             Topmost = ((MenuItem) sender).IsChecked;
+            AppSettings.AlwaysOnTopEnabled = Topmost;
         }
 
         private void SnippetsDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -146,6 +165,66 @@ namespace EasySnippets.Views
         private void MainWindow_OnDeactivated(object sender, EventArgs e)
         {
             SnippetsDataGrid.UnselectAll();
+        }
+
+        private void MenuSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(AppSettings.CurrentFilePath))
+            {
+                SaveFile(AppSettings.CurrentFilePath);
+            }
+            else
+            {
+                SaveFileUsingFileDialog();
+            }
+        }
+
+        private void LoadSettings()
+        {
+            try
+            {
+                string json = File.ReadAllText(Settings.SettingsPath);
+                AppSettings = JsonConvert.DeserializeObject<Settings>(json);
+            }
+            catch (Exception)
+            {
+                AppSettings = new Settings
+                {
+                    AlwaysOnTopEnabled = false,
+                    AutoStartEnabled = StartUpManager.IsApplicationAddedToCurrentUserStartup(),
+                    CurrentFilePath = null
+                };
+            }
+
+            Topmost = AppSettings.AlwaysOnTopEnabled;
+            AlwaysOnTopMenuItem.IsChecked = AppSettings.AlwaysOnTopEnabled;
+            AutoStartMenuItem.IsChecked = AppSettings.AutoStartEnabled;
+
+            ApplyAutoStart(AppSettings.AutoStartEnabled);
+
+            if (!string.IsNullOrWhiteSpace(AppSettings.CurrentFilePath))
+            {
+                LoadFile(AppSettings.CurrentFilePath);
+            }
+        }
+
+        private void ApplyAutoStart(bool enabled)
+        {
+            AppSettings.AutoStartEnabled = enabled;
+
+            if (AppSettings.AutoStartEnabled)
+            {
+                StartUpManager.AddApplicationToCurrentUserStartup();
+            }
+            else
+            {
+                StartUpManager.RemoveApplicationFromCurrentUserStartup();
+            }
+        }
+
+        private void AutoStartToggle(object sender, RoutedEventArgs e)
+        {
+            ApplyAutoStart(((MenuItem)sender).IsChecked);
         }
     }
 }

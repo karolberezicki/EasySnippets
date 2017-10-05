@@ -11,6 +11,18 @@
         WindowStyle="ToolWindow"
         Closing="Window_Closing"  Deactivated="MainWindow_OnDeactivated">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="MenuOpen_Click"></CommandBinding>
+        <CommandBinding Command="Save" Executed="MenuSave_Click"></CommandBinding>
+        <CommandBinding Command="SaveAs" Executed="MenuSaveAs_Click"></CommandBinding>
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"></KeyBinding>
+    </Window.InputBindings>
+
     <Grid>
         <Grid.DataContext>
             <Binding ElementName="EasySnippetsWindow" Path="." />
@@ -24,13 +36,16 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="_File">
-                <MenuItem Header="Open..." Click="MenuOpen_Click" />
-                <MenuItem Header="Save As..." Click="MenuSaveAs_Click" />
+                <MenuItem Header="Open..." Command="Open" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Save" Command="Save" InputGestureText="Ctrl+S" />
+                <MenuItem Header="Save As..." Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="_Exit" Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="_Always on top" IsCheckable="True" IsChecked="False" 
+                <MenuItem Name="AlwaysOnTopMenuItem"  Header="_Always on top" IsCheckable="True" IsChecked="False" 
                           Checked="AlwaysOnTopToggle" Unchecked="AlwaysOnTopToggle" />
+                <MenuItem Name="AutoStartMenuItem"  Header="_Start with Windows" IsCheckable="True" IsChecked="False" 
+                          Checked="AutoStartToggle" Unchecked="AutoStartToggle" />
             </MenuItem>
             <MenuItem Header="+Add new" Click="AddNewClick" />
         </Menu>

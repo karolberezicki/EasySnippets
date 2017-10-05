@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySnippets", "EasySnippets\EasySnippets.csproj", "{1D06B5D9-EE33-4C83-8B32-F96B9B364695}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySnippetsUnitTests", "EasySnippetsUnitTests\EasySnippetsUnitTests.csproj", "{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

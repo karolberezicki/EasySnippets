@@ -8,7 +8,7 @@ namespace EasySnippets.Utils
     {
         public static void AddApplicationToCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
             {
                 Assembly curAssembly = Assembly.GetExecutingAssembly();
                 key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
@@ -17,7 +17,7 @@ namespace EasySnippets.Utils
 
         public static void RemoveApplicationFromCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
             {
                 Assembly curAssembly = Assembly.GetExecutingAssembly();
                 key?.DeleteValue(curAssembly.GetName().Name, false);
@@ -26,11 +26,11 @@ namespace EasySnippets.Utils
 
         public static bool IsApplicationAddedToCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
             {
                 Assembly curAssembly = Assembly.GetExecutingAssembly();
-                string currentValue = key?.GetValue(curAssembly.GetName().Name).ToString();
-                return currentValue != null && currentValue.Equals(curAssembly.Location, StringComparison.InvariantCultureIgnoreCase);
+                object currentValue = key?.GetValue(curAssembly.GetName().Name, null);
+                return currentValue != null && currentValue.ToString().Equals(curAssembly.Location, StringComparison.InvariantCultureIgnoreCase);
             }
         }
     }

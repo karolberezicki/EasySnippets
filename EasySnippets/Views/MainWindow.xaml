@@ -36,14 +36,16 @@
 
         <Menu Grid.Row="0">
             <MenuItem Header="_File">
-                <MenuItem Header="Open..." Click="MenuOpen_Click" Command="Open" InputGestureText="Ctrl+O" />
-                <MenuItem Header="Save" Click="MenuSave_Click" />
-                <MenuItem Header="Save As..." Click="MenuSaveAs_Click" Command="SaveAs" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Open..." Command="Open" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Save" Command="Save" InputGestureText="Ctrl+S" />
+                <MenuItem Header="Save As..." Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="_Exit" Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="_Always on top" IsCheckable="True" IsChecked="False" 
+                <MenuItem Name="AlwaysOnTopMenuItem"  Header="_Always on top" IsCheckable="True" IsChecked="False" 
                           Checked="AlwaysOnTopToggle" Unchecked="AlwaysOnTopToggle" />
+                <MenuItem Name="AutoStartMenuItem"  Header="_Start with Windows" IsCheckable="True" IsChecked="False" 
+                          Checked="AutoStartToggle" Unchecked="AutoStartToggle" />
             </MenuItem>
             <MenuItem Header="+Add new" Click="AddNewClick" />
         </Menu>

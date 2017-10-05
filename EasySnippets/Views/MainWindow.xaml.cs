@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EasySnippets.Utils;
 using EasySnippets.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;

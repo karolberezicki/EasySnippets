@@ -64,7 +64,7 @@ namespace EasySnippets.Views
             LoadFile(dialog.FileName);
         }
 
-        private void LoadFile(string path)
+        private void LoadFile(string path, bool showMessageBoxOnFail = true)
         {
             try
             {
@@ -76,7 +76,12 @@ namespace EasySnippets.Views
             }
             catch (Exception)
             {
-                MessageBoxCentered.Show(this, "Couldn't read file.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (showMessageBoxOnFail)
+                {
+                    MessageBoxCentered.Show(this, "Couldn't read file.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+                AppSettings.CurrentFilePath = null;
             }
         }
 
@@ -204,7 +209,7 @@ namespace EasySnippets.Views
 
             if (!string.IsNullOrWhiteSpace(AppSettings.CurrentFilePath))
             {
-                LoadFile(AppSettings.CurrentFilePath);
+                LoadFile(AppSettings.CurrentFilePath, false);
             }
         }
 

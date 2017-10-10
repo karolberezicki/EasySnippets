@@ -9,7 +9,6 @@ using EasySnippets.Utils;
 using EasySnippets.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using MahApps.Metro.Controls;
 using MahApps.Metro.SimpleChildWindow;
 
 namespace EasySnippets.Views
@@ -17,7 +16,7 @@ namespace EasySnippets.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         public ObservableCollection<Snippet> SnippetsList { get; set; }
         public Settings AppSettings { get; set; }

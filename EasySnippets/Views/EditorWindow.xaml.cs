@@ -1,13 +1,12 @@
 ﻿using System.Windows;
 using EasySnippets.ViewModels;
-using MahApps.Metro.Controls;
 
 namespace EasySnippets.Views
 {
     /// <summary>
     /// Interaction logic for EditorWindow.xaml
     /// </summary>
-    public partial class EditorWindow : MetroWindow
+    public partial class EditorWindow
     {
         public Snippet Snippet { get; set; }
         public bool IsEdit { get; set; }

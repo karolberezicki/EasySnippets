@@ -1,12 +1,13 @@
 ﻿using System.Windows;
 using EasySnippets.ViewModels;
+using MahApps.Metro.Controls;
 
 namespace EasySnippets.Views
 {
     /// <summary>
     /// Interaction logic for EditorWindow.xaml
     /// </summary>
-    public partial class EditorWindow
+    public partial class EditorWindow : MetroWindow
     {
         public Snippet Snippet { get; set; }
         public bool IsEdit { get; set; }
@@ -24,6 +25,11 @@ namespace EasySnippets.Views
 
         private void OkClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(SnippetNameTextBox.Text) || string.IsNullOrWhiteSpace(SnippetValueTextBox.Text))
+            {
+                return;
+            }
+
             Snippet.Name = SnippetNameTextBox.Text;
             Snippet.Value = SnippetValueTextBox.Text;
 

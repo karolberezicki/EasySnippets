@@ -9,13 +9,15 @@ using EasySnippets.Utils;
 using EasySnippets.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using MahApps.Metro.Controls;
+using MahApps.Metro.SimpleChildWindow;
 
 namespace EasySnippets.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : MetroWindow
     {
         public ObservableCollection<Snippet> SnippetsList { get; set; }
         public Settings AppSettings { get; set; }
@@ -28,25 +30,15 @@ namespace EasySnippets.Views
             LoadSettings();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        private async void Exit_Click(object sender, RoutedEventArgs e)
         {
-            if (CancelClose())
-            {
-                return;
-            }
-
-            Application.Current.Shutdown();
+            await this.ShowChildWindowAsync(new ClosingDialog());
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = CancelClose();
-        }
-
-        private bool CancelClose()
-        {
-            return MessageBoxCentered.Show(this, "Are you sure?", "Exit",
-                           MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No;
+            e.Cancel = true;
+            await this.ShowChildWindowAsync(new ClosingDialog());
         }
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)

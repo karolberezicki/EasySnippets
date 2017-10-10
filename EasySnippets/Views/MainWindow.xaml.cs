@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reactive.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,6 +27,15 @@ namespace EasySnippets.Views
         {
             SnippetsList = new ObservableCollection<Snippet>();
             InitializeComponent();
+
+            IObservable<SizeChangedEventArgs> observableSizeChanges = Observable
+                .FromEventPattern<SizeChangedEventArgs>(this, "SizeChanged")
+                .Select(x => x.EventArgs)
+                .Throttle(TimeSpan.FromMilliseconds(300));
+
+            IDisposable sizeChangedSubscription = observableSizeChanges
+                .ObserveOn(SynchronizationContext.Current)
+                .Subscribe(x => WindowSizeChanged());
 
             LoadSettings();
         }
@@ -181,6 +192,7 @@ namespace EasySnippets.Views
             {
                 string json = File.ReadAllText(Settings.SettingsPath);
                 AppSettings = JsonConvert.DeserializeObject<Settings>(json);
+
             }
             catch (Exception)
             {
@@ -191,6 +203,12 @@ namespace EasySnippets.Views
                     CurrentFilePath = null
                 };
             }
+
+            AppSettings.Height = AppSettings.Height > 0 ? AppSettings.Height : 300;
+            AppSettings.Width = AppSettings.Width > 0 ? AppSettings.Width : 220;
+
+            Height = AppSettings.Height;
+            Width = AppSettings.Width;
 
             Topmost = AppSettings.AlwaysOnTopEnabled;
             AlwaysOnTopMenuItem.IsChecked = AppSettings.AlwaysOnTopEnabled;
@@ -221,6 +239,12 @@ namespace EasySnippets.Views
         private void AutoStartToggle(object sender, RoutedEventArgs e)
         {
             ApplyAutoStart(((MenuItem)sender).IsChecked);
+        }
+
+        private void WindowSizeChanged()
+        {
+            AppSettings.Height = Convert.ToInt32(Height);
+            AppSettings.Width = Convert.ToInt32(Width);
         }
     }
 }

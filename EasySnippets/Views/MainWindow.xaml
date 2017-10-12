@@ -50,6 +50,8 @@
                           Checked="AlwaysOnTopToggle" Unchecked="AlwaysOnTopToggle" />
                 <MenuItem Name="AutoStartMenuItem"  Header="_Start with Windows" IsCheckable="True" IsChecked="False" 
                           Checked="AutoStartToggle" Unchecked="AutoStartToggle" />
+                <MenuItem Name="AutoSaveMenuItem"  Header="_Auto save" IsCheckable="True" IsChecked="False" 
+                          Checked="AutoSaveToggle" Unchecked="AutoSaveToggle" />
             </MenuItem>
             <MenuItem Header="+Add new" Click="AddNewClick" />
         </Menu>
@@ -72,9 +74,6 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" 
                                     Width="*" IsReadOnly="True" FontSize="20" />
             </DataGrid.Columns>
-            <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightSkyBlue"/>
-            </DataGrid.Resources>
         </DataGrid>
     </Grid>
 

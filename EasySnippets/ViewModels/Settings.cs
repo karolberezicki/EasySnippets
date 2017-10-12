@@ -25,6 +25,14 @@ namespace EasySnippets.ViewModels
             set => SetProperty(ref _alwaysOnTopEnabled, value);
         }
 
+        private bool _autoSaveEnabled;
+
+        public bool AutoSaveEnabled
+        {
+            get => _autoSaveEnabled;
+            set => SetProperty(ref _autoSaveEnabled, value);
+        }
+
         private string _currentFilePath;
 
         public string CurrentFilePath

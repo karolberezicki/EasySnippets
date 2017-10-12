@@ -38,6 +38,8 @@ namespace EasySnippets.Views
                 .Subscribe(x => WindowSizeChanged());
 
             LoadSettings();
+
+            SnippetsList.CollectionChanged += (sender, args) => { TriggerAutoSave(); };
         }
 
         private async void Exit_Click(object sender, RoutedEventArgs e)
@@ -66,7 +68,7 @@ namespace EasySnippets.Views
             LoadFile(dialog.FileName);
         }
 
-        private void LoadFile(string path, bool showMessageBoxOnFail = true)
+        private async void LoadFile(string path, bool initialLoad = false)
         {
             try
             {
@@ -75,12 +77,17 @@ namespace EasySnippets.Views
                 SnippetsList.Clear();
                 deserializedSnippets.ForEach(snippet => SnippetsList.Add(snippet));
                 AppSettings.CurrentFilePath = path;
+
+                if (!initialLoad)
+                {
+                    AppSettings.AutoSaveEnabled = false;
+                }
             }
             catch (Exception)
             {
-                if (showMessageBoxOnFail)
+                if (!initialLoad)
                 {
-                    MessageBoxCentered.Show(this, "Couldn't read file.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    await this.ShowChildWindowAsync(new MessageDialog {MessageBoxText = "Couldn't read file.", Caption = "Error" });
                 }
 
                 AppSettings.CurrentFilePath = null;
@@ -181,6 +188,11 @@ namespace EasySnippets.Views
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveSnippets();
+        }
+
+        private void SaveSnippets()
+        {
             if (!string.IsNullOrWhiteSpace(AppSettings.CurrentFilePath))
             {
                 SaveFile(AppSettings.CurrentFilePath);
@@ -204,6 +216,7 @@ namespace EasySnippets.Views
                 AppSettings = new Settings
                 {
                     AlwaysOnTopEnabled = false,
+                    AutoSaveEnabled = false,
                     AutoStartEnabled = StartUpManager.IsApplicationAddedToCurrentUserStartup(),
                     CurrentFilePath = null
                 };
@@ -217,14 +230,16 @@ namespace EasySnippets.Views
 
             Topmost = AppSettings.AlwaysOnTopEnabled;
             AlwaysOnTopMenuItem.IsChecked = AppSettings.AlwaysOnTopEnabled;
-            AutoStartMenuItem.IsChecked = AppSettings.AutoStartEnabled;
-
-            ApplyAutoStart(AppSettings.AutoStartEnabled);
 
             if (!string.IsNullOrWhiteSpace(AppSettings.CurrentFilePath))
             {
-                LoadFile(AppSettings.CurrentFilePath, false);
+                LoadFile(AppSettings.CurrentFilePath, true);
             }
+
+            AutoStartMenuItem.IsChecked = AppSettings.AutoStartEnabled;
+            AutoSaveMenuItem.IsChecked = AppSettings.AutoSaveEnabled;
+
+            ApplyAutoStart(AppSettings.AutoStartEnabled);
         }
 
         private void ApplyAutoStart(bool enabled)
@@ -250,6 +265,20 @@ namespace EasySnippets.Views
         {
             AppSettings.Height = Convert.ToInt32(Height);
             AppSettings.Width = Convert.ToInt32(Width);
+        }
+
+        private void AutoSaveToggle(object sender, RoutedEventArgs e)
+        {
+            AppSettings.AutoSaveEnabled = ((MenuItem)sender).IsChecked;
+            TriggerAutoSave();
+        }
+
+        private void TriggerAutoSave()
+        {
+            if (AppSettings.AutoSaveEnabled)
+            {
+                SaveSnippets();
+            }
         }
     }
 }

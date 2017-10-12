@@ -83,6 +83,9 @@
     </ApplicationDefinition>
     <Compile Include="Utils\StartUpManager.cs" />
     <Compile Include="ViewModels\Settings.cs" />
+    <Compile Include="Views\MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ClosingDialog.xaml.cs">
       <DependentUpon>ClosingDialog.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\Snippet.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Page Include="Views\MessageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ClosingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -114,7 +121,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Utils\MessageBoxCentered.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

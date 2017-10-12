@@ -8,9 +8,12 @@
         xmlns:views="clr-namespace:EasySnippets.Views"
         x:Name="EasySnippetsEditorWindow"
         mc:Ignorable="d"
-        Title="Snippet editor" Height="450" Width="350">
+        Title="Snippet editor" Height="450" Width="350"
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="2"
+        WindowStartupLocation="CenterScreen">
     
-    <Grid>
+    <Grid Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="30"/>

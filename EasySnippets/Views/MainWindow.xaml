@@ -10,7 +10,10 @@
         Title="Easy Snippets" 
         Height="300" Width="220" 
         WindowStyle="ToolWindow"
-        Closing="Window_Closing"  Deactivated="MainWindow_OnDeactivated">
+        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderThickness="2"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing" Deactivated="MainWindow_OnDeactivated">
 
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="MenuOpen_Click"></CommandBinding>
@@ -24,7 +27,7 @@
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"></KeyBinding>
     </Window.InputBindings>
 
-    <Grid>
+    <Grid Margin="2">
         <Grid.DataContext>
             <Binding ElementName="EasySnippetsWindow" Path="." />
         </Grid.DataContext>
@@ -56,14 +59,21 @@
                   Name="SnippetsDataGrid"
                   SelectionChanged="SnippetsDataGrid_OnSelectionChanged"
                   MouseDoubleClick="EditSnippet"
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  CanUserSortColumns="False">
+
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="BorderThickness" Value="1" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" 
                                     Width="*" IsReadOnly="True" FontSize="20" />
             </DataGrid.Columns>
             <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
-                                 Color="LightSkyBlue"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightSkyBlue"/>
             </DataGrid.Resources>
         </DataGrid>
     </Grid>

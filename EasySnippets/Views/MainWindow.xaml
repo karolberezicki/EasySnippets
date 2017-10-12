@@ -72,9 +72,6 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" 
                                     Width="*" IsReadOnly="True" FontSize="20" />
             </DataGrid.Columns>
-            <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightSkyBlue"/>
-            </DataGrid.Resources>
         </DataGrid>
     </Grid>
 

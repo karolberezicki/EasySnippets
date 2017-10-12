@@ -139,6 +139,11 @@ namespace EasySnippets.Views
         {
             int rowIndex = SnippetsDataGrid.SelectedIndex;
 
+            if (rowIndex < 0)
+            {
+                return;
+            }
+
             Snippet snippet = rowIndex < SnippetsList.Count ? SnippetsList[rowIndex] : new Snippet();
             bool isEdit = rowIndex < SnippetsList.Count;
 

@@ -50,6 +50,8 @@
                           Checked="AlwaysOnTopToggle" Unchecked="AlwaysOnTopToggle" />
                 <MenuItem Name="AutoStartMenuItem"  Header="_Start with Windows" IsCheckable="True" IsChecked="False" 
                           Checked="AutoStartToggle" Unchecked="AutoStartToggle" />
+                <MenuItem Name="AutoSaveMenuItem"  Header="_Auto save" IsCheckable="True" IsChecked="False" 
+                          Checked="AutoSaveToggle" Unchecked="AutoSaveToggle" />
             </MenuItem>
             <MenuItem Header="+Add new" Click="AddNewClick" />
         </Menu>

@@ -24,6 +24,11 @@ namespace EasySnippets.Views
 
         private void OkClick(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(SnippetNameTextBox.Text) || string.IsNullOrWhiteSpace(SnippetValueTextBox.Text))
+            {
+                return;
+            }
+
             Snippet.Name = SnippetNameTextBox.Text;
             Snippet.Value = SnippetValueTextBox.Text;
 

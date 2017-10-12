@@ -1,8 +1,9 @@
-﻿<Window x:Class="EasySnippets.Views.EditorWindow"
+﻿<controls:MetroWindow x:Class="EasySnippets.Views.EditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:EasySnippets"
         xmlns:views="clr-namespace:EasySnippets.Views"
         x:Name="EasySnippetsEditorWindow"
@@ -56,4 +57,4 @@
                 Visibility="{Binding IsEdit, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource FindAncestor, AncestorType= views:EditorWindow}}"/>
     </Grid>
 
-</Window>
+</controls:MetroWindow>

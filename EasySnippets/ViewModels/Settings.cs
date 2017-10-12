@@ -33,6 +33,22 @@ namespace EasySnippets.ViewModels
             set => SetProperty(ref _currentFilePath, value);
         }
 
+        private int _height;
+
+        public int Height
+        {
+            get => _height;
+            set => SetProperty(ref _height, value);
+        }
+
+        private int _width;
+
+        public int Width
+        {
+            get => _width;
+            set => SetProperty(ref _width, value);
+        }
+
         protected new virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))

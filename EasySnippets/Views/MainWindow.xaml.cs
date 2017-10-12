@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reactive.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,6 +11,7 @@ using EasySnippets.Utils;
 using EasySnippets.ViewModels;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using MahApps.Metro.SimpleChildWindow;
 
 namespace EasySnippets.Views
 {
@@ -25,28 +28,27 @@ namespace EasySnippets.Views
             SnippetsList = new ObservableCollection<Snippet>();
             InitializeComponent();
 
+            IObservable<SizeChangedEventArgs> observableSizeChanges = Observable
+                .FromEventPattern<SizeChangedEventArgs>(this, "SizeChanged")
+                .Select(x => x.EventArgs)
+                .Throttle(TimeSpan.FromMilliseconds(300));
+
+            IDisposable sizeChangedSubscription = observableSizeChanges
+                .ObserveOn(SynchronizationContext.Current)
+                .Subscribe(x => WindowSizeChanged());
+
             LoadSettings();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        private async void Exit_Click(object sender, RoutedEventArgs e)
         {
-            if (CancelClose())
-            {
-                return;
-            }
-
-            Application.Current.Shutdown();
+            await this.ShowChildWindowAsync(new ClosingDialog());
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            e.Cancel = CancelClose();
-        }
-
-        private bool CancelClose()
-        {
-            return MessageBoxCentered.Show(this, "Are you sure?", "Exit",
-                           MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.No;
+            e.Cancel = true;
+            await this.ShowChildWindowAsync(new ClosingDialog());
         }
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)
@@ -119,7 +121,7 @@ namespace EasySnippets.Views
         private void SnippetsDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SnippetsDataGrid.SelectedItem is Snippet snippet){
-                Clipboard.SetText($"{snippet.Value}");
+                Clipboard.SetDataObject($"{snippet.Value}");
             }
         }
 
@@ -136,6 +138,11 @@ namespace EasySnippets.Views
         private void EditSnippet(object sender, MouseButtonEventArgs e)
         {
             int rowIndex = SnippetsDataGrid.SelectedIndex;
+
+            if (rowIndex < 0)
+            {
+                return;
+            }
 
             Snippet snippet = rowIndex < SnippetsList.Count ? SnippetsList[rowIndex] : new Snippet();
             bool isEdit = rowIndex < SnippetsList.Count;
@@ -164,7 +171,7 @@ namespace EasySnippets.Views
                 SnippetsList.Add(editorWindow.Snippet);
             }
 
-            Clipboard.SetText($"{editorWindow.Snippet.Value}");
+            Clipboard.SetDataObject($"{editorWindow.Snippet.Value}");
         }
 
         private void MainWindow_OnDeactivated(object sender, EventArgs e)
@@ -190,6 +197,7 @@ namespace EasySnippets.Views
             {
                 string json = File.ReadAllText(Settings.SettingsPath);
                 AppSettings = JsonConvert.DeserializeObject<Settings>(json);
+
             }
             catch (Exception)
             {
@@ -200,6 +208,12 @@ namespace EasySnippets.Views
                     CurrentFilePath = null
                 };
             }
+
+            AppSettings.Height = AppSettings.Height > 0 ? AppSettings.Height : 300;
+            AppSettings.Width = AppSettings.Width > 0 ? AppSettings.Width : 220;
+
+            Height = AppSettings.Height;
+            Width = AppSettings.Width;
 
             Topmost = AppSettings.AlwaysOnTopEnabled;
             AlwaysOnTopMenuItem.IsChecked = AppSettings.AlwaysOnTopEnabled;
@@ -230,6 +244,12 @@ namespace EasySnippets.Views
         private void AutoStartToggle(object sender, RoutedEventArgs e)
         {
             ApplyAutoStart(((MenuItem)sender).IsChecked);
+        }
+
+        private void WindowSizeChanged()
+        {
+            AppSettings.Height = Convert.ToInt32(Height);
+            AppSettings.Width = Convert.ToInt32(Width);
         }
     }
 }

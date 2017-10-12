@@ -121,7 +121,7 @@ namespace EasySnippets.Views
         private void SnippetsDataGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SnippetsDataGrid.SelectedItem is Snippet snippet){
-                Clipboard.SetText($"{snippet.Value}");
+                Clipboard.SetDataObject($"{snippet.Value}");
             }
         }
 
@@ -166,7 +166,7 @@ namespace EasySnippets.Views
                 SnippetsList.Add(editorWindow.Snippet);
             }
 
-            Clipboard.SetText($"{editorWindow.Snippet.Value}");
+            Clipboard.SetDataObject($"{editorWindow.Snippet.Value}");
         }
 
         private void MainWindow_OnDeactivated(object sender, EventArgs e)

@@ -9,7 +9,7 @@
         x:Name="EasySnippetsEditorWindow"
         mc:Ignorable="d"
         Title="Snippet editor" Height="450" Width="350"
-        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
         BorderThickness="2"
         WindowStartupLocation="CenterScreen">
     

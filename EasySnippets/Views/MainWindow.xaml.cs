@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows;
@@ -9,9 +11,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using EasySnippets.Utils;
 using EasySnippets.ViewModels;
+using MahApps.Metro.SimpleChildWindow;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using MahApps.Metro.SimpleChildWindow;
 
 namespace EasySnippets.Views
 {
@@ -28,18 +30,18 @@ namespace EasySnippets.Views
             SnippetsList = new ObservableCollection<Snippet>();
             InitializeComponent();
 
-            IObservable<SizeChangedEventArgs> observableSizeChanges = Observable
+            var observableSizeChanges = Observable
                 .FromEventPattern<SizeChangedEventArgs>(this, "SizeChanged")
                 .Select(x => x.EventArgs)
                 .Throttle(TimeSpan.FromMilliseconds(300));
 
-            IDisposable sizeChangedSubscription = observableSizeChanges
+            var sizeChangedSubscription = observableSizeChanges
                 .ObserveOn(SynchronizationContext.Current)
-                .Subscribe(x => WindowSizeChanged());
+                .Subscribe(_ => WindowSizeChanged());
 
             LoadSettings();
 
-            SnippetsList.CollectionChanged += (sender, args) => { TriggerAutoSave(); };
+            SnippetsList.CollectionChanged += (_, _) => { TriggerAutoSave(); };
         }
 
         private async void Exit_Click(object sender, RoutedEventArgs e)
@@ -47,7 +49,7 @@ namespace EasySnippets.Views
             await this.ShowChildWindowAsync(new ClosingDialog());
         }
 
-        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             await this.ShowChildWindowAsync(new ClosingDialog());
@@ -55,7 +57,7 @@ namespace EasySnippets.Views
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog
+            var dialog = new OpenFileDialog
             {
                 Filter = "JSON Files(*.json)|*.json|All(*.*)|*"
             };
@@ -72,10 +74,13 @@ namespace EasySnippets.Views
         {
             try
             {
-                string json = File.ReadAllText(path);
-                List<Snippet> deserializedSnippets = JsonConvert.DeserializeObject<List<Snippet>>(json);
+                var json = await File.ReadAllTextAsync(path);
+                var deserializedSnippets = JsonConvert.DeserializeObject<List<Snippet>>(json);
                 SnippetsList.Clear();
-                deserializedSnippets.ForEach(snippet => SnippetsList.Add(snippet));
+                if (deserializedSnippets?.Any() ?? false)
+                {
+                    deserializedSnippets.ForEach(snippet => SnippetsList.Add(snippet));
+                }
                 AppSettings.CurrentFilePath = path;
 
                 if (!initialLoad)
@@ -101,7 +106,7 @@ namespace EasySnippets.Views
 
         private void SaveFileUsingFileDialog()
         {
-            SaveFileDialog dialog = new SaveFileDialog
+            var dialog = new SaveFileDialog
             {
                 Filter = "JSON Files(*.json)|*.json|All(*.*)|*"
             };
@@ -115,7 +120,7 @@ namespace EasySnippets.Views
 
         private void SaveFile(string path)
         {
-            string json = JsonConvert.SerializeObject(SnippetsList, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(SnippetsList, Formatting.Indented);
             File.WriteAllText(path, json);
         }
 
@@ -134,7 +139,7 @@ namespace EasySnippets.Views
 
         private void AddNewClick(object sender, RoutedEventArgs e)
         {
-            EditorWindow editorWindow = new EditorWindow(new Snippet(), false);
+            var editorWindow = new EditorWindow(new Snippet(), false);
 
             if (editorWindow.ShowDialog() == true)
             {
@@ -144,17 +149,17 @@ namespace EasySnippets.Views
 
         private void EditSnippet(object sender, MouseButtonEventArgs e)
         {
-            int rowIndex = SnippetsDataGrid.SelectedIndex;
+            var rowIndex = SnippetsDataGrid.SelectedIndex;
 
             if (rowIndex < 0)
             {
                 return;
             }
 
-            Snippet snippet = rowIndex < SnippetsList.Count ? SnippetsList[rowIndex] : new Snippet();
-            bool isEdit = rowIndex < SnippetsList.Count;
+            var snippet = rowIndex < SnippetsList.Count ? SnippetsList[rowIndex] : new Snippet();
+            var isEdit = rowIndex < SnippetsList.Count;
 
-            EditorWindow editorWindow = new EditorWindow(snippet, isEdit);
+            var editorWindow = new EditorWindow(snippet, isEdit);
 
             if (editorWindow.ShowDialog() != true)
             {
@@ -205,22 +210,24 @@ namespace EasySnippets.Views
 
         private void LoadSettings()
         {
+
             try
             {
-                string json = File.ReadAllText(Settings.SettingsPath);
+                var json = File.ReadAllText(Settings.SettingsPath);
                 AppSettings = JsonConvert.DeserializeObject<Settings>(json);
-
             }
             catch (Exception)
             {
-                AppSettings = new Settings
-                {
-                    AlwaysOnTopEnabled = false,
-                    AutoSaveEnabled = false,
-                    AutoStartEnabled = StartUpManager.IsApplicationAddedToCurrentUserStartup(),
-                    CurrentFilePath = null
-                };
+                AppSettings = null;
             }
+
+            AppSettings ??= new Settings
+            {
+                AlwaysOnTopEnabled = false,
+                AutoSaveEnabled = false,
+                AutoStartEnabled = StartUpManager.IsApplicationAddedToCurrentUserStartup(),
+                CurrentFilePath = null
+            };
 
             AppSettings.Height = AppSettings.Height > 0 ? AppSettings.Height : 300;
             AppSettings.Width = AppSettings.Width > 0 ? AppSettings.Width : 220;

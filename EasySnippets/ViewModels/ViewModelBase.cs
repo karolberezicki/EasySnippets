@@ -18,7 +18,7 @@ namespace EasySnippets.ViewModels
             if (EqualityComparer<T>.Default.Equals(storage, value))
                 return false;
             storage = value;
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
             return true;
         }
     }

@@ -10,7 +10,7 @@
         Title="Easy Snippets" 
         Height="300" Width="220" 
         WindowStyle="ToolWindow"
-        BorderBrush="{DynamicResource AccentColorBrush}"
+        BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
         BorderThickness="2"
         WindowStartupLocation="CenterScreen"
         Closing="Window_Closing" Deactivated="MainWindow_OnDeactivated">

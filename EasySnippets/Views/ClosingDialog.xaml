@@ -13,7 +13,7 @@
                                mc:Ignorable="d">
 
     <simpleChildWindow:ChildWindow.OverlayBrush>
-        <SolidColorBrush Opacity="0.8" Color="{StaticResource Gray2}" />
+        <SolidColorBrush Opacity="0.8" Color="{StaticResource 	MahApps.Colors.Gray2}" />
     </simpleChildWindow:ChildWindow.OverlayBrush>
 
    

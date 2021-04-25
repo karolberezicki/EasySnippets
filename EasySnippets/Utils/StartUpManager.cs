@@ -1,37 +1,37 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Win32;
 
 namespace EasySnippets.Utils
 {
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Windows only app")]
     public class StartUpManager
     {
         public static void AddApplicationToCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
-            {
-                Assembly curAssembly = Assembly.GetExecutingAssembly();
-                key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
-            }
+            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            var curAssembly = Assembly.GetExecutingAssembly();
+            key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
         }
 
         public static void RemoveApplicationFromCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            var curAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+            if (!string.IsNullOrWhiteSpace(curAssemblyName))
             {
-                Assembly curAssembly = Assembly.GetExecutingAssembly();
-                key?.DeleteValue(curAssembly.GetName().Name, false);
+                key?.DeleteValue(curAssemblyName, false);
             }
+
         }
 
         public static bool IsApplicationAddedToCurrentUserStartup()
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
-            {
-                Assembly curAssembly = Assembly.GetExecutingAssembly();
-                object currentValue = key?.GetValue(curAssembly.GetName().Name, null);
-                return currentValue != null && currentValue.ToString().Equals(curAssembly.Location, StringComparison.InvariantCultureIgnoreCase);
-            }
+            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            var curAssembly = Assembly.GetExecutingAssembly();
+            var currentValue = key?.GetValue(curAssembly.GetName().Name, null)?.ToString();
+            return currentValue?.Equals(curAssembly.Location, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
     }
 }

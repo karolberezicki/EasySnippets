@@ -62,14 +62,14 @@ namespace EasySnippets.ViewModels
             if (EqualityComparer<T>.Default.Equals(storage, value))
                 return false;
             storage = value;
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
             SaveSettings();
             return true;
         }
 
         private void SaveSettings()
         {
-            string json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(SettingsPath, json);
         }
     }

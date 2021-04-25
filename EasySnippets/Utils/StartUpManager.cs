@@ -12,7 +12,7 @@ namespace EasySnippets.Utils
         {
             using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             var curAssembly = Assembly.GetExecutingAssembly();
-            key?.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+            key?.SetValue(curAssembly.GetName().Name, AppContext.BaseDirectory);
         }
 
         public static void RemoveApplicationFromCurrentUserStartup()
@@ -31,7 +31,7 @@ namespace EasySnippets.Utils
             using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             var curAssembly = Assembly.GetExecutingAssembly();
             var currentValue = key?.GetValue(curAssembly.GetName().Name, null)?.ToString();
-            return currentValue?.Equals(curAssembly.Location, StringComparison.InvariantCultureIgnoreCase) ?? false;
+            return currentValue?.Equals(AppContext.BaseDirectory, StringComparison.InvariantCultureIgnoreCase) ?? false;
         }
     }
 }

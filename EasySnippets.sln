@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasySnippets", "EasySnippets\EasySnippets.csproj", "{1D06B5D9-EE33-4C83-8B32-F96B9B364695}"
 EndProject
@@ -13,8 +13,8 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Debug|x64.ActiveCfg = Debug|x64
-		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Debug|x64.Build.0 = Debug|x64
+		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Debug|x64.Build.0 = Debug|Any CPU
 		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Release|x64.ActiveCfg = Release|x64
 		{1D06B5D9-EE33-4C83-8B32-F96B9B364695}.Release|x64.Build.0 = Release|x64
 		{1F4F3DCF-6818-4AEB-98BF-1C5936B1B914}.Debug|x64.ActiveCfg = Debug|x64

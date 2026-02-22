@@ -7,10 +7,10 @@ Features:
 * Always on top toggle
 * Save and load using JSON
 
-## Single click to copy underlying value to clipboard
+## Single-click to copy the underlying value to the clipboard
 
 ![Main window](https://github.com/karolberezicki/EasySnippets/raw/master/img/EasySnippets_Main.png)
 
-## Double click to open editor
+## Double-click to open the editor
 
 ![Editor window](https://github.com/karolberezicki/EasySnippets/raw/master/img/EasySnippets_Editor.png)

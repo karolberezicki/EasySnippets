@@ -1,76 +1,77 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
+using System.Text.Json;
 
-namespace EasySnippets.ViewModels
+namespace EasySnippets.ViewModels;
+
+public sealed class Settings : ViewModelBase
 {
-    public class Settings : ViewModelBase
+    public static readonly string SettingsPath = Path.Combine(AppContext.BaseDirectory, "settings.json");
+
+    public bool AutoStartEnabled
     {
-        public const string SettingsPath = @".\settings.json";
+        get;
+        set => SetProperty(ref field, value);
+    }
 
-        private bool _autoStartEnabled;
+    public bool AlwaysOnTopEnabled
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 
-        public bool AutoStartEnabled
+    public bool AutoSaveEnabled
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    public string CurrentFilePath
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    public int Height
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    public int Width
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    private new bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
+    {
+        if (EqualityComparer<T>.Default.Equals(storage, value))
+            return false;
+        storage = value;
+        OnPropertyChanged(propertyName);
+        SaveSettings();
+        return true;
+    }
+
+    private void SaveSettings()
+    {
+        var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(SettingsPath, json);
+    }
+
+    public static Settings LoadSettings()
+    {
+        try
         {
-            get => _autoStartEnabled;
-            set => SetProperty(ref _autoStartEnabled, value);
+            var json = File.ReadAllText(SettingsPath);
+            return JsonSerializer.Deserialize<Settings>(json);
         }
-
-        private bool _alwaysOnTopEnabled;
-
-        public bool AlwaysOnTopEnabled
+        catch (Exception)
         {
-            get => _alwaysOnTopEnabled;
-            set => SetProperty(ref _alwaysOnTopEnabled, value);
-        }
-
-        private bool _autoSaveEnabled;
-
-        public bool AutoSaveEnabled
-        {
-            get => _autoSaveEnabled;
-            set => SetProperty(ref _autoSaveEnabled, value);
-        }
-
-        private string _currentFilePath;
-
-        public string CurrentFilePath
-        {
-            get => _currentFilePath;
-            set => SetProperty(ref _currentFilePath, value);
-        }
-
-        private int _height;
-
-        public int Height
-        {
-            get => _height;
-            set => SetProperty(ref _height, value);
-        }
-
-        private int _width;
-
-        public int Width
-        {
-            get => _width;
-            set => SetProperty(ref _width, value);
-        }
-
-        protected new virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-            storage = value;
-            OnPropertyChanged(propertyName);
-            SaveSettings();
-            return true;
-        }
-
-        private void SaveSettings()
-        {
-            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
-            File.WriteAllText(SettingsPath, json);
+            return null;
         }
     }
 }

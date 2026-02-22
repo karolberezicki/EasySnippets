@@ -1,25 +1,56 @@
-﻿using System;
+using System;
 using System.IO;
-using System.Windows;
-using System.Windows.Threading;
+using Microsoft.UI.Xaml;
+using EasySnippets.Views;
 
-namespace EasySnippets
+namespace EasySnippets;
+
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    private static readonly string LogPath = Path.Combine(AppContext.BaseDirectory, "es.log");
+
+    public App()
     {
-        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        this.InitializeComponent();
+        this.UnhandledException += App_UnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+    }
+
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        m_window = new MainWindow();
+        m_window.Activate();
+    }
+
+    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        LogException(e.Exception);
+        e.Handled = true;
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception ex)
         {
-            Console.WriteLine(@"An unexpected application exception occurred {0}", args.Exception);
-
-            File.AppendAllLines(@".\es.log", new[] { $"{DateTime.UtcNow:yyyy-MM-dd HH\\:mm\\:ss.fff} {args.Exception.Message}", args.Exception.StackTrace });
-
-            MessageBox.Show("An unexpected exception has occurred. Shutting down the application. Please check the log file for more details.");
-
-            // Prevent default unhandled exception processing
-            args.Handled = true;
+            LogException(ex);
         }
     }
+
+    private static void LogException(Exception ex)
+    {
+        try
+        {
+            File.AppendAllLines(LogPath, new[]
+            {
+                $"{DateTime.UtcNow:yyyy-MM-dd HH\\:mm\\:ss.fff} {ex.Message}",
+                ex.StackTrace ?? string.Empty
+            });
+        }
+        catch
+        {
+            // Prevent recursive failures in logging
+        }
+    }
+
+    private Window m_window;
 }

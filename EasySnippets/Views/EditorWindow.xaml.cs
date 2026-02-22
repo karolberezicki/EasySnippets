@@ -1,49 +1,48 @@
-﻿using System.Windows;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using EasySnippets.ViewModels;
 
-namespace EasySnippets.Views
+namespace EasySnippets.Views;
+
+public sealed partial class EditorWindow : ContentDialog
 {
-    /// <summary>
-    /// Interaction logic for EditorWindow.xaml
-    /// </summary>
-    public partial class EditorWindow
+    public Snippet Snippet { get; set; }
+    public bool IsEdit { get; set; }
+    public bool IsSetToDelete { get; private set; }
+
+    public EditorWindow(Snippet snippet, bool isEdit)
     {
-        public Snippet Snippet { get; set; }
-        public bool IsEdit { get; set; }
-        public bool IsSetToDelete { get; private set; }
+        this.InitializeComponent();
+        Snippet = snippet;
+        IsEdit = isEdit;
+        SnippetNameTextBox.Text = snippet.Name ?? string.Empty;
+        SnippetValueTextBox.Text = snippet.Value ?? string.Empty;
 
-        public EditorWindow(Snippet snippet, bool isEdit)
+        if (isEdit)
         {
-            InitializeComponent();
-            Owner = Application.Current.MainWindow;
-            Snippet = snippet;
-            SnippetNameTextBox.Text = snippet.Name;
-            SnippetValueTextBox.Text = snippet.Value;
-            IsEdit = isEdit;
+            DeleteButton.Visibility = Visibility.Visible;
+            DeleteButton.Foreground = new SolidColorBrush(Colors.White);
+            DeleteButton.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 196, 43, 28));
+        }
+    }
+
+    private void OnPrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        if (string.IsNullOrWhiteSpace(SnippetNameTextBox.Text) || string.IsNullOrWhiteSpace(SnippetValueTextBox.Text))
+        {
+            args.Cancel = true;
+            return;
         }
 
-        private void OkClick(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(SnippetNameTextBox.Text) || string.IsNullOrWhiteSpace(SnippetValueTextBox.Text))
-            {
-                return;
-            }
+        Snippet.Name = SnippetNameTextBox.Text;
+        Snippet.Value = SnippetValueTextBox.Text;
+    }
 
-            Snippet.Name = SnippetNameTextBox.Text;
-            Snippet.Value = SnippetValueTextBox.Text;
-
-            DialogResult = true;
-        }
-
-        private void CancelClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
-
-        private void DeleteClick(object sender, RoutedEventArgs e)
-        {
-            IsSetToDelete = true;
-            DialogResult = true;
-        }
+    private void DeleteClick(object sender, RoutedEventArgs e)
+    {
+        IsSetToDelete = true;
+        this.Hide();
     }
 }

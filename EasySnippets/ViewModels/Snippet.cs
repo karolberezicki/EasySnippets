@@ -1,20 +1,16 @@
-﻿namespace EasySnippets.ViewModels
+namespace EasySnippets.ViewModels;
+
+public class Snippet : ViewModelBase
 {
-    public class Snippet : ViewModelBase
+    public string Name
     {
-        private string _name;
-        private string _value;
+        get;
+        set => SetProperty(ref field, value);
+    }
 
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-
-        public string Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
+    public string Value
+    {
+        get;
+        set => SetProperty(ref field, value);
     }
 }

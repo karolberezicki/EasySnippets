@@ -1,37 +1,37 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Win32;
 
-namespace EasySnippets.Utils
+namespace EasySnippets.Utils;
+
+[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Windows only app")]
+public static class StartUpManager
 {
-    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Windows only app")]
-    public class StartUpManager
+    private const string CurrentVersionRun = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+
+    public static void AddApplicationToCurrentUserStartup()
     {
-        public static void AddApplicationToCurrentUserStartup()
-        {
-            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            var curAssembly = Assembly.GetExecutingAssembly();
-            key?.SetValue(curAssembly.GetName().Name, AppContext.BaseDirectory);
-        }
+        using var key = Registry.CurrentUser.OpenSubKey(CurrentVersionRun, true);
+        var curAssembly = Assembly.GetExecutingAssembly();
+        key?.SetValue(curAssembly.GetName().Name, AppContext.BaseDirectory);
+    }
 
-        public static void RemoveApplicationFromCurrentUserStartup()
+    public static void RemoveApplicationFromCurrentUserStartup()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(CurrentVersionRun, true);
+        var curAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+        if (!string.IsNullOrWhiteSpace(curAssemblyName))
         {
-            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            var curAssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            if (!string.IsNullOrWhiteSpace(curAssemblyName))
-            {
-                key?.DeleteValue(curAssemblyName, false);
-            }
-
+            key?.DeleteValue(curAssemblyName, false);
         }
+    }
 
-        public static bool IsApplicationAddedToCurrentUserStartup()
-        {
-            using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            var curAssembly = Assembly.GetExecutingAssembly();
-            var currentValue = key?.GetValue(curAssembly.GetName().Name, null)?.ToString();
-            return currentValue?.Equals(AppContext.BaseDirectory, StringComparison.InvariantCultureIgnoreCase) ?? false;
-        }
+    public static bool IsApplicationAddedToCurrentUserStartup()
+    {
+        using var key = Registry.CurrentUser.OpenSubKey(CurrentVersionRun, true);
+        var curAssembly = Assembly.GetExecutingAssembly();
+        var currentValue = key?.GetValue(curAssembly.GetName().Name, null)?.ToString();
+        return currentValue?.Equals(AppContext.BaseDirectory, StringComparison.InvariantCultureIgnoreCase) ?? false;
     }
 }
